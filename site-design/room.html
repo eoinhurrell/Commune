@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Commune</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta charset="utf-8"> 
+	<meta name="description" content=""> 
+	<link href="twitter-bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet"> 
+	<link href="style.css" rel="stylesheet"> 	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script>
+	$(document).ready(function() {
+	        $('#share_button').mouseenter(function(e) {
+	            
+	        }).mouseleave(function(e) {
+
+	        });
+			$('#share_button').click(function(){
+				if(!$('#share_link').is(":visible")){
+					$('#share_link').fadeIn(200);
+					$('#share_link').select();
+				}
+				else{
+					$('#share_link').fadeOut(200);
+				}
+				
+			});	
+	    });
+	</script>
+</head>
+<body id="index" onload="">
+<div class="container">
+      <div class="span12">
+			<div class="span3">
+			  <div id="info">
+			  <img src="logo.png" />
+		      <h1>Commune</h1>
+			  <dl>
+				<dt>Video Source:</dt>
+				<dd><a href="http://www.youtube.com/watch?v=MejbOFk7H6c" target="_blank">Youtube</a></dd>
+			    <dt>Quakenet.org IRC:</dt>  
+			    <dd>#commune-121323123</dd>
+			  </dl>
+			  </div>
+			  <div id="push"></div>
+			  <div id="share">
+		  	    <button id="share_button" class="btn btn-primary btn-large">Share <i class="icon-retweet icon-white"></i></button>
+ 		        <input type="text" id="share_link" value="http://ultimatehurl.com/src/commune/"/>	
+			  </div>
+		    </div>
+	    	<div id="video" class="span8">
+	    		<!--<iframe class="youtube-player" type="text/html" width="600" height="358" src="http://www.youtube.com/embed/MejbOFk7H6c?autoplay=0&start=0" frameborder="0"></iframe>-->
+				<!--
+				<object type="application/x-shockwave-flash" height="600" width="358" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel=whitera" bgcolor="#000000" id="live_embed_player_flash" class="videoplayer">
+				<param name="allowFullScreen" value="true" />
+				<param name="allowScriptAccess" value="always" />
+				<param name="allowNetworking" value="all" />
+				<param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" />
+				<param name="flashvars" value="hostname=www.twitch.tv&channel=whitera&auto_play=true&start_volume=50" />
+				</object>
+				-->
+				<!--<iframe src="http://player.vimeo.com/video/1777595" width="600" height="358" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>-->
+	    	</div>
+	</div>
+	<div id="chat" class="span12"><iframe id="irc" src="http://webchat.quakenet.org/?channels=commune-121323123&uio=d4" width="900" height="400"></iframe></div>
+	<div id="footer" class="span2 offset10">by <a href="http://twitter.com/UltimateHurl">UltimateHurl</a></div>
+</div>
+</body>
+</html>
+<!--
+<div class="span12 row">
+	<div class="span1">Youtube</div>
+	<div class="span1">Vimeo</div>
+	<div class="span1">Dailymotion</div>
+	<div class="span1">Blip.tv</div>
+	<div class="span1">Soundcloud</div>
+	<div class="span1">USTREAM</div>
+	<div class="span1">Justin.tv</div>
+	<div class="span1">Twitch.tv</div>
+	<div class="span1">Livestream</div>
+	<div class="span1">Slideshare</div>
+	<div class="span1">Imgur</div>
+</div>
+-->

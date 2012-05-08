@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Commune</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta charset="utf-8"> 
+	<meta name="description" content="Commune, a place for people to chat and share videos"> 
+	<link href="http://ultimatehurl.com/src/commune/twitter-bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet"> 
+	<link href="http://ultimatehurl.com/src/commune/style.css" rel="stylesheet"> 	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="http://ultimatehurl.com/src/commune/twitter-bootstrap/js/bootstrap-tab.js"></script>	
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-18046844-1']);
+	  _gaq.push(['_setDomainName', 'ultimatehurl.com']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+</head>
+<body id="index" onload="">
+<div class="container">
+    <div class="span12">
+			<div class="span3">
+			  <div id="info">
+			  <img src="http://ultimatehurl.com/src/commune/logo.png" alt="Commune logo"/>
+		      <h1>Commune</h1>
+		    <!--
+			  <dl>
+				<dt>noun:</dt>
+				<dd>A group of people living together.</dd>
+			    <dt>verb [no obj.]<strong>(commune with)</strong>:</dt>  
+			    <dd>To share one's intimate thoughts or feelings with someone</dd>
+			  </dl>
+			  -->
+			  <p>A service to watch video together with friends in your own private chatroom. Friends can join the chat through Commune or any IRC client.</p>
+			  </div>
+		    </div>
+	    <div id="form" class="span8">
+				<div class="tabbable">
+				  <ul class="nav nav-tabs">
+				    <li class="active"><a href="#create" data-toggle="tab">Create</a></li>
+				    <!--<li><a href="#explore" data-toggle="tab">Explore</a></li>-->
+				    <li><a href="#advanced" data-toggle="tab">Advanced</a></li>				
+				  </ul>
+				  <div class="tab-content">
+				    <div class="tab-pane active" id="create">
+					    <form id="create-form" name="create-form" class="form-horizontal" method="POST" action="#">{% csrf_token %}
+				    	<fieldset>
+				          <legend>Create a new Commune</legend>
+				          <div class="control-group">
+				            <label class="control-label" for="c-video-link">Video link</label>
+				            <div class="controls">
+				              <input type="text" class="input-xlarge" id="c-video-link" name="c-video-link">
+				              <p class="help-block">A video on any supported site. Doesn't need to be an embed code</p>
+				            </div>
+				          </div>
+									<button type="submit" class="btn btn-primary" id="c-submit" name="c-submit">Commune <i class="icon-facetime-video icon-white"></i></button>
+				      </fieldset>
+							</form> 
+				    </div>
+				    <div class="tab-pane" id="explore">
+					    <form id="explore-form" class="form-horizontal" method="POST" action="#">{% csrf_token %}
+				      <fieldset>
+				          <legend>Create a new Commune using one of these videos:</legend>
+				      </fieldset>
+				      </form>
+				    </div>
+				    <div class="tab-pane" id="advanced">
+					    <form id="advanced-form" class="form-horizontal" method="POST" action="#">{% csrf_token %}
+				      <fieldset>
+				          <legend>Create a custom Commune</legend>
+				          <div class="control-group">
+				            <label class="control-label" for="a-video-link">Video link</label>
+				            <div class="controls">
+				              <input type="text" class="input-xlarge" id="a-video-link" name="a-video-link">
+				              <p class="help-block">A video on any supported site. Doesn't need to be an embed code</p>
+				            </div>
+				          </div>
+								  <div class="control-group">
+				            <label class="control-label" for="input01">IRC Channel name</label>
+				            <div class="controls">
+											<div class="input-prepend">
+											<span class="add-on">#</span>
+				              <input type="text" class="input-xlarge" id="a-channel-name" name="a-channel-name">
+											</div>
+				              <p class="help-block">The name of the IRC channel you wish to join while watching.</p>
+				            </div>
+				          </div>
+									<button type="submit" class="btn btn-primary">Commune <i class="icon-facetime-video icon-white"></i></button>
+				      </fieldset>
+							</form>
+				    </div>       
+				  </div>
+				</div>
+				
+	    </div>
+	  </div>
+	<div class="span12 sel">
+		<div class="span4 watchsel">
+			<h3>Watch!</h3>
+			<p>Watch streaming or static video content from your favourite sites.</p>
+			<div class="supportlist">
+			<h4>Supports videos from:</h4>
+		  <ul class="unstyled">
+		    <li class="supicon"><strong>Youtube</strong></li>
+		    <li class="supicon"><strong>Vimeo</strong></li>
+		    <li class="supicon"><strong>Justin.tv</strong></li>
+		    <li class="supicon"><strong>Twitch.tv</strong></li>
+		  </ul>
+			</div>
+		</div>
+		<div class="span4 chatsel">
+			<h3>Chat!</h3>
+			<ul class="unstyled">
+		    <li>Chat in your own private social circle during videos, not strangers.</li>
+		    <li>Keep in touch whether they Commune or use IRC.</li>
+		  </ul>
+		</div>
+		<div class="span4 sharesel">
+			<h3>Share!</h3>
+			<p>Control access to your chat with an easy-to-share link.</p>
+			<h4>Bookmarklet</h4>
+			<p>Drag the link below into your bookmark bar and turn any video into a social event!</p>
+			<a href="javascript:location.href='http://ultimatehurl.com/commune/submit?url='+encodeURIComponent(location.href)" class="bookmarklet btn btn-inverse .btn-small">Commune</a>
+		</div>
+	<div id="footer" class="span2 offset10">by <a href="http://twitter.com/UltimateHurl">UltimateHurl</a></div>
+  </div>
+</div>
+</body>
+</html>

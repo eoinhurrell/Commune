@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Commune</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta charset="utf-8"> 
+	<meta name="description" content=""> 
+	<link href="twitter-bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet"> 
+	<link href="style.css" rel="stylesheet"> 	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="twitter-bootstrap/js/bootstrap-tab.js"></script>	
+</head>
+<body id="index" onload="">
+<div class="container">
+    <div class="span12">
+			<div class="span3">
+			  <div id="info">
+			  <img src="logo.png" />
+		      <h1>Commune</h1>
+			  <dl>
+				<dt>noun:</dt>
+				<dd>A group of people living together.</dd>
+			    <dt>verb [no obj.]<strong>(commune with)</strong>:</dt>  
+			    <dd>To share one's intimate thoughts or feelings with someone</dd>
+			  </dl>
+			  <p>A service to watch video together with friends in your own private chatroom. Friends can join the chat through Commune or any IRC client.</p>
+			  <h4>Supports</h4>
+			  <ul>
+			    <li class="supicon"><strong>Youtube</strong></li>
+			    <li class="supicon"><strong>Vimeo</strong></li>
+			    <li class="supicon"><strong>Justin.tv</strong></li>
+			    <li class="supicon"><strong>Twitch.tv</strong></li>
+			  </ul>
+			  </div>
+		    </div>
+	    <div id="form" class="span8">
+				<div class="tabbable">
+				  <ul class="nav nav-tabs">
+				    <li class="active"><a href="#create" data-toggle="tab">Create</a></li>
+				    <!--<li><a href="#explore" data-toggle="tab">Explore</a></li>-->
+				    <li><a href="#advanced" data-toggle="tab">Advanced</a></li>				
+				  </ul>
+				  <div class="tab-content">
+				    <div class="tab-pane active" id="create">
+					    <form id="create-form" class="form-horizontal" method="GET" action="#">
+				    	<fieldset>
+				          <legend>Create a new Commune</legend>
+				          <div class="control-group">
+				            <label class="control-label" for="c-video-link">Video link</label>
+				            <div class="controls">
+				              <input type="text" class="input-xlarge" id="c-video-link">
+				              <p class="help-block">A video on any supported site. Doesn't need to be an embed code</p>
+				            </div>
+				          </div>
+				          <div class="control-group">
+				            <label class="control-label" for="c-autoplayCheckbox">Autoplay</label>
+				            <div class="controls">
+				              <label class="checkbox">
+				                <input type="checkbox" id="c-autoplayCheckbox" value="option1">
+				                Your video will start when the room is created.
+				              </label>
+				            </div>
+						  		</div>
+									<button type="submit" class="btn btn-primary">Commune <i class="icon-facetime-video icon-white"></i></button>
+				      </fieldset>
+							</form> 
+				    </div>
+				    <div class="tab-pane" id="explore">
+					    <form id="explore-form" class="form-horizontal" method="POST" action="#">
+				      <fieldset>
+				          <legend>Create a new Commune using one of these videos:</legend>
+				      </fieldset>
+				      </form>
+				    </div>
+				    <div class="tab-pane" id="advanced">
+					    <form id="advanced-form" class="form-horizontal" method="POST" action="#">
+				      <fieldset>
+				          <legend>Create a custom Commune</legend>
+				          <div class="control-group">
+				            <label class="control-label" for="a-video-link">Video link</label>
+				            <div class="controls">
+				              <input type="text" class="input-xlarge" id="a-video-link">
+				              <p class="help-block">A video on any supported site. Doesn't need to be an embed code</p>
+				            </div>
+				          </div>
+				          <div class="control-group">
+				            <label class="control-label" for="a-autoplayCheckbox">Autoplay</label>
+				            <div class="controls">
+				              <label class="checkbox">
+				                <input type="checkbox" id="a-autoplayCheckbox" value="option1">
+				                Your video will start when the room is created.
+				              </label>
+				            </div>
+						  		</div>
+								  <div class="control-group">
+				            <label class="control-label" for="input01">IRC Channel name</label>
+				            <div class="controls">
+											<div class="input-prepend">
+											<span class="add-on">#</span>
+				              <input type="text" class="input-xlarge" id="a-channel-name">
+											</div>
+				              <p class="help-block">The name of the IRC channel you wish to join while watching.</p>
+				            </div>
+				          </div>
+									<button type="submit" class="btn btn-primary">Commune <i class="icon-facetime-video icon-white"></i></button>
+				      </fieldset>
+							</form>
+				    </div>       
+				  </div>
+				</div>
+	    </div>
+	  </div>
+	<div id="footer" class="span2 offset10">by <a href="http://twitter.com/UltimateHurl">UltimateHurl</a></div>
+</div>
+</body>
+</html>
+<!--
+<div class="span12 row support">
+	<h2>Supports</h2>
+	<div class="span1 supicon">Youtube</div>
+	<div class="span1 supicon">Vimeo</div>
+	<div class="span1 supicon">Dailymotion</div>
+	<div class="span1 supicon">Blip.tv</div>
+	<div class="span1 supicon">Soundcloud</div>
+	<div class="span1 supicon">USTREAM</div>
+	<div class="span1 supicon">Justin.tv</div>
+	<div class="span1 supicon">Twitch.tv</div>
+	<div class="span1 supicon">Livestream</div>
+	<div class="span1 supicon">Slideshare</div>
+	<div class="span1 supicon">Imgur</div>
+</div>
+-->

@@ -1,0 +1,264 @@
+<html>
+	<head>
+		<title>Commune, bringing people together to watch</title>
+
+		<!-- CSS styling -->
+		<style type='text/css'>
+		body{
+			padding:0px;
+			margin:0px;
+		}
+		input[type=text] {
+			padding: 5px;
+		}
+		h1 {
+			font-size:40px;
+		}
+		#userName input[type=text] {
+			font-size:40px;
+		}
+		
+		#userName input[type=submit] {
+			visibility:hidden;
+		}
+		
+		#create-Room input[type=text] {
+			font-size:40px;
+		}
+		
+		#create-Room input[type=submit] {
+			visibility:hidden;
+		}
+		
+		#join-Room input[type=text] {
+			font-size:40px;
+		}
+		
+		#join-Room input[type=submit] {
+			visibility:hidden;
+		}
+		
+		#chatText #history {
+			border:solid 1px black;
+			padding: 0px;
+			margin-bottom: 0px;
+			width: 640px;
+			height:400px;
+			overflow:scroll;
+		}
+		
+		#newUserText {
+			width:100%;
+		}
+		#msendButton {
+			visibility:hidden;
+		}
+		.historyItem ~ .historyItem {
+			margin-top: 10px;
+		}
+		#video{
+			width:640px;
+			height:385px;
+			border:solid 1px red;
+		}
+		</style>
+	</head>
+	<body>
+		<table style='height:100%;width:100%'>
+			<tr>
+				<td style='width:20%'></td>
+				<td style='vertical-align:middle;width:650px'>
+
+					<!-- Form to grab the user's name -->
+					<div id='userName'>
+						<form name='getUserName' action="">
+							<h1>Please enter your name</h1>
+							<input type='text' id='userNameField'>
+							<input type='submit' value='Start' onclick='setName();return false;'>
+						</form>
+					</div>
+					
+					<!--Form to create room-->
+					<div id='create-Room'>
+						<form name='creatingUser' action="">
+							<h1>Video</h1>
+							<input type='text' id='cvidlink'>
+							<h1>Nickname</h1>
+							<input type='text' id='cuserNameField'>
+							<input type='submit' value='Start' onclick='createRoom();return false;'>
+						</form>
+					</div>
+					
+					<!--Form to join room-->
+					<div id='join-Room'>
+						<form name='joiningUser' action="">
+							<h1>Nickname</h1>
+							<input type='text' id='juserNameField'>
+							<input type='submit' value='Start' onclick='joinRoom();return false;'>
+						</form>
+					</div>
+					
+					<!-- This is shown when a chat is in progress -->
+					<div id='chatText'>
+						<div id ="video"></div>
+						<!-- Chat history is inserted as a child of this -->
+						<div id='history'></div>
+						<!-- The form to get new text -->
+						<form name='myText' action="">
+							<input type='text' id='newUserText'>
+							<!--<input type='submit' value='>' id='sendButton' onclick="return false;">-->
+						</form>
+					</div>
+				</td>
+				<td style='width:20%'></td>
+			</tr>
+		</table>
+		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js'></script>
+		<script type='text/javascript' src="/socket.io/socket.io.js"></script>
+		<script type='text/javascript'>
+			// PLEASE NOTE!
+			// This code is meant for tutorial purposes. As such, it's in no way secure or
+			// particularly efficient or even very clean. It's meant to just be very direct.
+
+			// Globals
+			var userName = null;
+
+			// When the document is ready, hide the chat elements & give focus
+			// to the user name text field
+			$(document).ready(function() {
+				$('#userName').hide();
+				if(location.hash != ""){
+					$('#create-Room').hide();
+				}
+				else{
+					$('#join-Room').hide();
+				}
+				$('#chatText').hide();
+				$('#userNameField').focus();
+			});
+
+			var socketMsg = io.connect('/addText');
+			socketMsg.on('msg received', function(userName, text) {
+				addText(userName, text);
+			});
+
+			// This is called when we have a username
+			function setName() {
+
+				// Store it globally
+				userName = $(userNameField).val();
+
+				// Initialize Socket.IO connection
+				var socket = io.connect("/listen");
+				socket.emit('set name', userName)
+					.on('begin chat', function() {
+
+						// Handle the new text form
+						$('#sendButton').click(function() {
+							// When new text is added, handle it by sending the message to the server
+							// and then clearing out the text just enetered
+							socketMsg.emit('add text', {'user':userName, 'text':$('#newUserText').val()});
+							$('#newUserText').val('');
+						});
+
+						// Hide the form to get the user name
+						$('#userName').hide();
+
+						// Show the chat elements
+						$('#chatText').show();
+
+						// Set focus to the new text field
+						$('#newUserText').focus();
+					});
+			}
+			
+			// This is called when we have a username + link
+			function createRoom() {
+
+				// Store it globally
+				userName = $(cuserNameField).val();
+				var link = $(cvidlink).val();
+
+				// Initialize Socket.IO connection
+				var socket = io.connect("/listen");
+				//socket.emit('create room', userName)
+				//	.on('room created', function() {});
+				socket.emit('create room', userName,link)
+					.on('begin chat', function(hash,embed) {
+						location.hash = hash;
+						$('#video').html(embed);
+						// Handle the new text form
+						$('#sendButton').click(function() {
+							// When new text is added, handle it by sending the message to the server
+							// and then clearing out the text just enetered
+							socketMsg.emit('add text', {'user':userName, 'text':$('#newUserText').val()});
+							$('#newUserText').val('');
+						});
+
+						// Hide the form to get the user name
+						$('#create-Room').hide();
+
+						// Show the chat elements
+						$('#chatText').show();
+
+						// Set focus to the new text field
+						$('#newUserText').focus();
+					});
+			}
+			
+			// This is called when we have a username + link
+			function joinRoom() {
+
+				// Store it globally
+				userName = $(juserNameField).val();
+				room = location.hash
+				// Initialize Socket.IO connection
+				var socket = io.connect("/listen");
+				//socket.emit('create room', userName)
+				//	.on('room created', function() {});
+				socket.emit('join room', userName, room)
+					.on('begin chat', function(embed) {
+						$('#video').html(embed);
+						// Handle the new text form
+						$('#sendButton').click(function() {
+							// When new text is added, handle it by sending the message to the server
+							// and then clearing out the text just enetered
+							socketMsg.emit('add text', {'user':userName, 'text':$('#newUserText').val()});
+							$('#newUserText').val('');
+						});
+
+						// Hide the form to get the user name
+						$('#join-Room').hide();
+
+						// Show the chat elements
+						$('#chatText').show();
+
+						// Set focus to the new text field
+						$('#newUserText').focus();
+					});
+			}
+			
+			// This is called by the server via the Comet iframe to handle
+			// new text
+			function addText(user, newText) {
+
+				// Create the history elements to insert
+				var element = $('<div class="historyItem"></div>');
+				var name = $('<b></b>');
+				name.text(user + ': ');
+				var text = $('<span></span>');
+				text.text(text);
+				
+				// Add the text to the elements
+				element.append(name);
+				element.append(newText);
+
+				// Add the history element to the DOM
+				$('#history').append(element);
+
+				// Scroll the history to the bottom (the latest one inserted)
+				$('#history')[0].scrollTop = $('#history')[0].scrollHeight;
+			}
+		</script>
+	</body>
+</html>

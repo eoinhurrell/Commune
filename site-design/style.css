@@ -1,0 +1,60 @@
+body{padding:0px;margin:0px;background-color:teal;}
+iframe{padding:0px;margin:0px;}
+.span12 h1{color:#FE6E4C; font-size:x-large; padding: 0px;text-shadow: 0px 1px 0px #B22222;}
+.span2{margin-left:0px;}
+.span4{margin-left:0px;padding-left:10px;border-top:1px solid #B22222;}
+.sel{margin-left:0px;background-color:#FE6E4C; height:250px;}
+.watchsel{height:250px;}
+.chatsel{border-left:1px solid #B22222;border-right:1px solid #B22222;height:250px;}
+.sharesel{height:230px;}
+.span10{margin-left:0px;}
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+  background-color: #B22222;
+  *background-color: #004ab3;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+  background-color: #FE6E4C \9;
+}
+.btn-primary {
+	background-color:orange;
+	background-image: -ms-linear-gradient(top, #FE6E4C, #B22222);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FE6E4C), to(#B22222));
+	background-image: -webkit-linear-gradient(top, #FE6E4C, #B22222);
+	background-image: -o-linear-gradient(top, #FE6E4C, #B22222);
+	background-image: -moz-linear-gradient(top, #FE6E4C, #B22222);
+	background-image: linear-gradient(top, #FE6E4C, #B22222);
+	background-repeat: repeat-x;
+	border-color: #B22222 #B22222 #8B0000;
+}
+div{padding:0px;}
+h3 {margin: 10px 0 10px 0;}
+.container{border:4px solid #2F4F4F;background-color:#f0f7ff;border-top:0px;}
+#info{border-right:2px solid #B22222;padding-left:10px;margin-top:10px;}
+#info dl{width:150px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+#info dl dd{text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  width: 145px;
+  white-space: nowrap;
+  overflow: hidden;}
+#info img{padding-left:30px;width:70px;height:70px;}
+#info p{padding-right:5px;margin-top:52px;}
+#info h4{text-align:center;margin-bottom:5px;margin-top:20px;}
+.supicon{margin-left:10px;}
+
+#push{height:109px;}
+#share{padding-left:10px;}
+#share_button{margin-bottom:5px;}
+#share_link{display:none;width:180px;}
+#video{padding-top:10px;padding-bottom:10px;min-height:358px;}
+#chat{min-height:400px;}
+#irc{min-width:600px;}
+#form{margin-top:83px;min-height:400px;}
+#form button{margin-top:20px;margin-left:160px;}
+#footer{font-size:small;float:right;text-align:right;padding-right:5px;}
