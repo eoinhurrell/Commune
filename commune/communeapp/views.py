@@ -97,12 +97,15 @@ def getEmbedCode(link, offset=0):
 	return html;
 	
 def getFreeRoom():
-	room = "" + str(random.randrange(0, 99999999))
-	while len(room) < 8:
-		room = "0" + room
-	if roomIsFree(room):
-		return room
-
+	random_number = Room.objects.make_random_password(length=8, allowed_chars='123456789')
+	while User.objects.filter(userprofile__temp_password=random_number):
+		random_number = Room.objects.make_random_password(length=8, allowed_chars='123456789')
+	# room = "" + str(random.randrange(0, 99999999))
+	# 	while len(room) < 8:
+	# 		room = "0" + room
+	# 	if roomIsFree(room):
+	# 		return room
+	
 def isValidVideo(link):
 	if link.find('youtube') != -1 or link.find('twitch.tv') != -1 or link.find('justin.tv') != -1 or link.find('vimeo.com') != -1:
 		return True
