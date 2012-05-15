@@ -20,12 +20,9 @@ handlers = {'google':handleGoogle,
 }
 
 if __name__ == '__main__':
-	url = sys.argv[1].split('/')
-	base = 0
-	if url[base] == 'http:':
-		base = 2
-	domain = url[base].split('.')
-	base = 0
-	if domain[base] == 'www':
-		base = 1
-	handlers.get(domain[base],handleError)(sys.argv[1])
+	import urlparse
+	url = urlparse.urlparse(sys.argv[1])
+	if not url:
+		handleError(sys.argv[1])
+	host = url.netloc.split('.')[0]
+	handlers.get(host,handleError)(sys.argv[1])
