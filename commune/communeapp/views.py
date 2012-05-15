@@ -10,13 +10,14 @@ import os
 from django.contrib.auth.models import User
 from communeapp.models import Room
 
-logger = logging.getLogger('commune')
-SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
-hdlr = logging.FileHandler(os.path.join(SITE_ROOT, '..')+'/commune.log')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-logger.addHandler(hdlr) 
-logger.setLevel(logging.WARNING)
+logging.basicConfig(filename='/home/sites/ultimatehurl.com/commune/commune.log',level=logging.DEBUG)
+# logger = logging.getLogger('commune')
+# SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+# hdlr = logging.FileHandler(os.path.join(SITE_ROOT, '..')+'/commune.log')
+# formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+# hdlr.setFormatter(formatter)
+# logger.addHandler(hdlr) 
+#logger.setLevel(logging.WARNING)
 
 #video embed handlers
 def handleYoutube(link,offset):
@@ -44,7 +45,7 @@ def handleVimeo(link,offset):
 	return embed.substitute(link=link)
 
 def handleError(link,offset):
-	logger.error('ROOM - Bad link:' + str(link))
+	logging.error('ROOM - Bad link:' + str(link))
 	raise Http404
 
 handlers = {'youtube':handleYoutube,
@@ -58,8 +59,9 @@ def index(request):
 		if 'c-video-link' in request.POST:  #basic form, create room and redirect to it
 			room_name=getFreeRoom()
 			vid = request.POST['c-video-link']
-			logger.info('New room link:' + str(vid) + ':'+ str(room_name))
+			logging.info('New room link:' + str(vid) + ':'+ str(room_name))
 			if not isValidVideo(vid):
+				logging.warning('Bad link:' + str(vid) + ':'+ str(room_name))
 				return render_to_response('create.html',context_instance=RequestContext(request))
 			r = Room(name=room_name,chat='commune-'+room_name,creation = time(),video = vid,users = 1)
 			r.save()
@@ -67,17 +69,17 @@ def index(request):
 		elif 'a-video-link' in request.POST: #advanced form, create room and redirect to it
 			room_name=getFreeRoom()
 			vid = request.POST['a-video-link']
-			logger.info('New room link:' + str(vid) + ':'+ str(room_name))
+			logging.info('New room link:' + str(vid) + ':'+ str(room_name))
 			if not isValidVideo(vid):
+				logging.warning('Bad link:' + str(vid) + ':'+ str(room_name))
 				return render_to_response('create.html',context_instance=RequestContext(request))
 			chat = request.POST['a-channel-name']
 			r = Room(name=room_name,chat=chat,creation = time(),video = vid,users = 1)
 			r.save()
 			return redirect("/commune/"+room_name+"/")
 		else: 	#critical error, how did it get to POST processing
-			logger.error('CREATE - Post request without right variables ' + str(request.POST))
-			pass
-			#raise Http404
+			logging.error('CREATE - Post request without right variables ' + str(request.POST))
+			raise Http404
 	return render_to_response('create.html',context_instance=RequestContext(request))
 
 def room(request, room_id):
@@ -122,19 +124,17 @@ def getFreeRoom():
 	
 def isValidVideo(link):
 	supported = ''.join(handlers.keys())
-	print supported
 	url = urlparse.urlparse(link)
 	if not url:
-		logger.info('NOVIDEO - ' + str(link))
+		logging.info('NOVIDEO - ' + str(link))
 		return False
 	host = url.netloc.split('.')
 	if len(host) == 3:
 		host = host[1]
 	else:
 		host = host[0]
-	print host
 	if supported.find(host) != -1:
 		return True
-	logger.info('NOVIDEO - ' + str(link))
+	logging.info('NOVIDEO - ' + str(link))
 	return False
 	
