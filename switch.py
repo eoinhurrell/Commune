@@ -24,5 +24,6 @@ if __name__ == '__main__':
 	url = urlparse.urlparse(sys.argv[1])
 	if not url:
 		handleError(sys.argv[1])
+	print url
 	host = url.netloc.split('.')[0]
 	handlers.get(host,handleError)(sys.argv[1])

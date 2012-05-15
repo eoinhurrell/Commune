@@ -4,21 +4,61 @@ from django.shortcuts import render_to_response, get_object_or_404,redirect
 from time import time
 import random,urllib
 import logging
+import string
+import urlparse
+import os
+from django.contrib.auth.models import User
 from communeapp.models import Room
 
 logger = logging.getLogger('commune')
-hdlr = logging.FileHandler('/home/sites/ultimatehurl.com/commune/commune.log')
+SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+hdlr = logging.FileHandler(os.path.join(SITE_ROOT, '..')+'/commune.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
 logger.setLevel(logging.WARNING)
 
+#video embed handlers
+def handleYoutube(link,offset):
+	params=""
+	link = link[31:link.find('&')]
+	embed = string.Template("<iframe class=\"youtube-player\" type=\"text/html\" width=\"600\" height=\"385\" src=\"http://www.youtube.com/embed/$link?autoplay=1&start=$offset&loop=1$params frameborder=\"0\">\n</iframe>")
+	return embed.substitute(link=link, offset=offset,params=params)
+
+def handleTwitch(link,offset):
+	#eg http://www.twitch.tv/dotademon
+	embed = string.Template("<object type=\"application/x-shockwave-flash\" height=\"358\" width=\"600\" data=\"http://www.twitch.tv/widgets/live_embed_player.swf?channel=$link\" bgcolor=\"#000000\" id=\"live_embed_player_flash\" class=\"videoplayer\"><param name=\"allowFullScreen\" value=\"true\" /><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"allowNetworking\" value=\"all\" /><param name=\"movie\" value=\"http://www.twitch.tv/widgets/live_embed_player.swf\" /><param name=\"flashvars\" value=\"hostname=www.twitch.tv&channel=$link&auto_play=true&start_volume=50\" /></object>")
+	link = link[link.rfind('/')+1:]
+	return embed.substitute(link=link)
+
+def handleJustin(link,offset):
+	#eg http://www.justin.tv/soul_soul
+	embed = string.Template("<object type=\"application/x-shockwave-flash\" height=\"358\" width=\"600\" data=\"http://www.justin.tv/widgets/live_embed_player.swf?channel=$link\" bgcolor=\"#000000\" id=\"live_embed_player_flash\" class=\"videoplayer\"><param name=\"allowFullScreen\" value=\"true\" /><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"allowNetworking\" value=\"all\" /><param name=\"movie\" value=\"http://www.justin.tv/widgets/live_embed_player.swf\" /><param name=\"flashvars\" value=\"hostname=www.justin.tv&channel=$link&auto_play=true&start_volume=50\" /></object>")
+	link = link[link.rfind('/')+1:]
+	return embed.substitute(link=link)
+
+def handleVimeo(link,offset):
+	#eg http://vimeo.com/15126262
+	embed = string.Template("<iframe src=\"http://player.vimeo.com/video/$link\" width=\"600\" height=\"358\" frameborder=\"0\" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>")
+	link = link[link.rfind('/')+1:]
+	return embed.substitute(link=link)
+
+def handleError(link,offset):
+	logger.error('ROOM - Bad link:' + str(link))
+	raise Http404
+
+handlers = {'youtube':handleYoutube,
+	'twitch':handleTwitch,
+	'justin':handleJustin,
+	'vimeo':handleVimeo
+}
 
 def index(request):
 	if request.method == 'POST':
 		if 'c-video-link' in request.POST:  #basic form, create room and redirect to it
 			room_name=getFreeRoom()
 			vid = request.POST['c-video-link']
+			logger.info('New room link:' + str(vid) + ':'+ str(room_name))
 			if not isValidVideo(vid):
 				return render_to_response('create.html',context_instance=RequestContext(request))
 			r = Room(name=room_name,chat='commune-'+room_name,creation = time(),video = vid,users = 1)
@@ -27,6 +67,7 @@ def index(request):
 		elif 'a-video-link' in request.POST: #advanced form, create room and redirect to it
 			room_name=getFreeRoom()
 			vid = request.POST['a-video-link']
+			logger.info('New room link:' + str(vid) + ':'+ str(room_name))
 			if not isValidVideo(vid):
 				return render_to_response('create.html',context_instance=RequestContext(request))
 			chat = request.POST['a-channel-name']
@@ -63,55 +104,37 @@ def submit(request):
 def getEmbedCode(link, offset=0):
 	html = "";
 	link = urllib.unquote(link)
-	link = link.replace('http://','')
-	link = link.replace('www.','')
-	if link.find('youtube') != -1:
-		params = ""
-		#http://www.youtube.com/watch?v=YvE91KHLrG4
-		link = link[20:]
-		if link.find('&') != -1:
-			# if link.find('list') != -1:   #playlist
-			# 	t = link[link.find('&list')+6:]
-			# 	print t
-			# 	if t.find('&') != -1:
-			# 		t = t[0:link.find('&')]
-			# 	params = "&listType=playlist&list=" + t
-			link = link[0:link.find('&')]
-		html = "<iframe class=\"youtube-player\" type=\"text/html\" width=\"600\" height=\"385\" src=\"http://www.youtube.com/embed/"+str(link)+"?autoplay=1&start="+str(int(offset))+"&loop=1"+str(params)+"\" frameborder=\"0\">\n</iframe>"
-	elif link.find('twitch.tv') != -1:
-		#http://www.twitch.tv/dotademon
-		link = link[link.rfind('/')+1:]
-		#<iframe frameborder="0" scrolling="no" id="chat_embed" src="http://twitch.tv/chat/embed?channel=mstephano&amp;popout_chat=true" height="500" width="350"></iframe>
-		html="<object type=\"application/x-shockwave-flash\" height=\"358\" width=\"600\" data=\"http://www.twitch.tv/widgets/live_embed_player.swf?channel="+link+"\" bgcolor=\"#000000\" id=\"live_embed_player_flash\" class=\"videoplayer\"><param name=\"allowFullScreen\" value=\"true\" /><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"allowNetworking\" value=\"all\" /><param name=\"movie\" value=\"http://www.twitch.tv/widgets/live_embed_player.swf\" /><param name=\"flashvars\" value=\"hostname=www.twitch.tv&channel="+link+"&auto_play=true&start_volume=50\" /></object>"
-	elif link.find('justin.tv') != -1:
-		#http://www.justin.tv/soul_soul
-		link = link[link.rfind('/')+1:]
-		html="<object type=\"application/x-shockwave-flash\" height=\"358\" width=\"600\" data=\"http://www.justin.tv/widgets/live_embed_player.swf?channel="+link+"\" bgcolor=\"#000000\" id=\"live_embed_player_flash\" class=\"videoplayer\"><param name=\"allowFullScreen\" value=\"true\" /><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"allowNetworking\" value=\"all\" /><param name=\"movie\" value=\"http://www.justin.tv/widgets/live_embed_player.swf\" /><param name=\"flashvars\" value=\"hostname=www.justin.tv&channel="+link+"&auto_play=true&start_volume=50\" /></object>"
-	elif link.find('vimeo.com') != -1:
-		#http://vimeo.com/15126262
-		link = link[link.rfind('/')+1:]
-		html = "<iframe src=\"http://player.vimeo.com/video/"+link+"\" width=\"600\" height=\"358\" frameborder=\"0\" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
-	else:  #critical error, how did we get a room without a proper link?
-		logger.error('ROOM - Bad link ' + str(link))
-		raise Http404
-	return html;
+	url = urlparse.urlparse(link)
+	if not url:
+		handleError(link)
+	host = url.netloc.split('.')
+	if len(host) == 3:
+		host = host[1]
+	else:
+		host = host[0]
+	return handlers.get(host,handleError)(link,0)
 	
 def getFreeRoom():
-	random_number = Room.objects.make_random_password(length=8, allowed_chars='123456789')
-	while User.objects.filter(userprofile__temp_password=random_number):
-		random_number = Room.objects.make_random_password(length=8, allowed_chars='123456789')
-	# room = "" + str(random.randrange(0, 99999999))
-	# 	while len(room) < 8:
-	# 		room = "0" + room
-	# 	if roomIsFree(room):
-	# 		return room
+	random_number = User.objects.make_random_password(length=8, allowed_chars='0123456789')
+	while Room.objects.filter(name=random_number):
+		random_number = User.objects.make_random_password(length=8, allowed_chars='0123456789')
+	return random_number
 	
 def isValidVideo(link):
-	if link.find('youtube') != -1 or link.find('twitch.tv') != -1 or link.find('justin.tv') != -1 or link.find('vimeo.com') != -1:
+	supported = ''.join(handlers.keys())
+	print supported
+	url = urlparse.urlparse(link)
+	if not url:
+		logger.info('NOVIDEO - ' + str(link))
+		return False
+	host = url.netloc.split('.')
+	if len(host) == 3:
+		host = host[1]
+	else:
+		host = host[0]
+	print host
+	if supported.find(host) != -1:
 		return True
 	logger.info('NOVIDEO - ' + str(link))
 	return False
-	
-def roomIsFree(room_id):
-	return True
 	
