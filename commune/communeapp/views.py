@@ -88,9 +88,17 @@ def room(request, room_id):
 	chat = r.chat
 	video_source = r.video
 	video_embed = getEmbedCode(r.video, offset)
-	r.users = r.users + 1
+	r.total_users = r.total_users + 1
+	r.current_users = r.current_users + 1
 	r.save()
 	return render_to_response('room.html', {'room_id':room_id, 'chat': chat, 'video_embed':video_embed, 'video_source':video_source,'share_link':request.get_full_path()},context_instance=RequestContext(request))
+
+def leave_room(request,room_id):
+	r = get_object_or_404(Room, name=room_id)
+	r.current_users = r.current_users - 1
+	if r.current_users <= 0:
+		r.empty = True
+	r.save()
 
 def submit(request):
 	if 'url' in request.GET:  #basic form, create room and redirect to it
